@@ -4,18 +4,20 @@ import HomeWork04.developers.dao.DeveloperDAO;
 import HomeWork04.developers.model.Developer;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class JavaIODeveloperDAOImpl implements DeveloperDAO{
     private String sep = System.getProperty("file.separator");
-    private String user = System.getProperty("user.dir");
+    private static String user = System.getProperty("user.dir");
     private File file = new File(user + sep + "Developers.dat");
 
     @Override
     public void save(Developer developer) {
         String developerToString = "";
+        if (getById(developer.getId()).getId() != null) {
+            System.out.println("Developer with this ID is already in base");
+            return;
+        }
 
         developerToString += developer.getId() + ",";
         developerToString += developer.getFirstName() + ",";
@@ -23,8 +25,10 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
         developerToString += developer.getSpecialty() + ",";
         developerToString += developer.getSalary() + "\n";
 
-        try(FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+        try(FileOutputStream fileOutputStream = new FileOutputStream(file, true)) {
             fileOutputStream.write(developerToString.getBytes());
+            fileOutputStream.flush();
+            fileOutputStream.close();
 
             System.out.println("Developer: " + developer + " successfully saved.");
         } catch (IOException e) {
@@ -39,7 +43,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
             System.out.println("Developer not found...");
             return;
         }else {
-            remov(developer);
+            //remov(developer);
             save(developer);
         }
     }
@@ -60,7 +64,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
 
                 String[] arrayOfSplitDeveloper = buffer.split(",");
 
-                if ((Integer.parseInt(arrayOfSplitDeveloper[0])) == id) {
+                if ((Long.parseLong(arrayOfSplitDeveloper[0])) == id) {
                     developer.setId(Long.parseLong(arrayOfSplitDeveloper[0]));
                     developer.setFirstName(arrayOfSplitDeveloper[1]);
                     developer.setLastName(arrayOfSplitDeveloper[2]);
@@ -77,26 +81,55 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
             e.printStackTrace();
         }
 
-//        System.out.println("Developer: " + developer + " successfully loaded.");
         return developer;
     }
 
     @Override
-    public void remov(Developer developer) {
-        try{
+    public boolean remov(Long id) throws Exception{
+        Developer developer = new Developer();
+        File tempFile = new File(new File(user) + ".tmp");
 
-            FileReader reader = new FileReader(file);
-            //реализовать метод удаления девелопера
+        if (!file.isFile()) {
+            throw new Exception("Input file is missing");
+        }
+
+        try (BufferedReader bufferReader = new BufferedReader(new FileReader(file));
+             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile))) {
+            String line;
+            while ((line = bufferReader.readLine()) != null) {
+                if (line.isEmpty()){
+                    continue;
+                }
+
+                String[] arrayOfSplitDeveloper = line.split(",");
+
+                if ((Long.parseLong(arrayOfSplitDeveloper[0])) != id){
+                developer.setId(Long.parseLong(arrayOfSplitDeveloper[0]));
+                developer.setFirstName(arrayOfSplitDeveloper[1]);
+                developer.setLastName(arrayOfSplitDeveloper[2]);
+                developer.setSpecialty(arrayOfSplitDeveloper[3]);
+                developer.setSalary(Double.parseDouble(arrayOfSplitDeveloper[4]));
+                    bufferedWriter.write(line);
+                    bufferedWriter.newLine();
+                    bufferedWriter.flush();
+                }
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
+        if (!file.delete()) {
+            throw new Exception("Could not delete file");
+        }
+        if (!tempFile.renameTo(file)) {
+            throw new Exception("Could not rename file");
+        }
 
+        return false;
     }
 
     @Override
     public Collection<Developer> getAll() {
         List<Developer> developers = new ArrayList<>();
-        Developer tempDeveloper = new Developer();
 
         try {
             FileReader reader = new FileReader(file);
@@ -104,6 +137,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
 
             String buffer;
             while ((buffer = bufferedReader.readLine()) != null) {
+                Developer tempDeveloper = new Developer();
                 if (buffer.isEmpty()) {
                     continue;
                 }
@@ -123,8 +157,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
 
         } catch (Exception e) {
             e.printStackTrace();
-        }
-
-        return developers;
+        }return developers;
     }
+
 }

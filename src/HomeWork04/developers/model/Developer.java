@@ -1,6 +1,6 @@
 package HomeWork04.developers.model;
 
-public class Developer {
+public class Developer{
     private Long id;
     private String firstName;
     private String lastName;
@@ -66,6 +66,6 @@ public class Developer {
                 ", lastName='" + lastName + '\'' +
                 ", specialty='" + specialty + '\'' +
                 ", salary=" + salary +
-                '}';
+                '}' + "\n";
     }
 }
