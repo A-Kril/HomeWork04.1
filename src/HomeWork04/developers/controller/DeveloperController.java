@@ -26,8 +26,8 @@ public class DeveloperController {
 
     public void newDeveloper() throws IOException {
         DeveloperDAO developerDAO = new JavaIODeveloperDAOImpl();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         Developer developer = new Developer();
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         System.out.print("Enter id:  ");
         developer.setId(Long.parseLong(reader.readLine()));
         System.out.print("Enter firstName:  ");
@@ -40,7 +40,6 @@ public class DeveloperController {
         developer.setSalary(Double.parseDouble(reader.readLine()));
         System.out.println();
 
-        //developerDAO.update(developer);
         developerDAO.save(developer);
     }
 
@@ -58,9 +57,8 @@ public class DeveloperController {
         System.out.println("1. First name \n"
                 + "2. Last name \n"
                 + "3. Specialty \n"
-                //+ "4. Experience \n"
-                + "5. Salary \n"
-                + "6. Stop editing & save");
+                + "4. Salary \n"
+                + "5. Stop editing & save");
         String com = reader.readLine();
         try {
             switch (com) {
@@ -82,45 +80,35 @@ public class DeveloperController {
                     developerDAO.update(developer);
                     editDeveloper(id);
                     break;
-//                case "4":
-//                    System.out.println("Enter new experience");
-//                    //developer.setExperience(Integer.parseInt(reader.readLine()));
-//                    developerDAO.save(developer);
-//                    editDeveloper(id);
-//                    break;
-                case "5":
+                case "4":
                     System.out.println("Enter new salary");
                     developer.setSalary(Double.parseDouble(reader.readLine()));
                     developerDAO.update(developer);
                     editDeveloper(id);
                     break;
-                case "6":
+                case "5":
                     break;
                 default:
-                    System.err.println("ENTER NUMBER FROM 1 TO 5!!!\n");
+                    System.err.println("Enter number from 1 to 4!!!\n");
                     editDeveloper(id);
                     break;
             }
         }
         catch (NumberFormatException e) {
-            System.err.println("VALUE IS NOT NUMBER!!!");
+            System.err.println("Value is not number!");
             editDeveloper(id);
         }
     }
 
     public boolean deleteDeveloper(Long id) throws Exception{
         DeveloperDAO developerDAO = new JavaIODeveloperDAOImpl();
-        //Developer developer = new Developer();
         return developerDAO.remov(id);
-        //return false;
     }
 
     public Collection<Developer> printDevs() {
         DeveloperDAO developerDAO = new JavaIODeveloperDAOImpl();
         List<Developer> developers = (List<Developer>) developerDAO.getAll();
         return developers;
-        //return developerDAO.getAll();
-        //return developerDAO.toString();
     }
 }
 

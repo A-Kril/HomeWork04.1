@@ -12,12 +12,13 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
     private File file = new File(user + sep + "Developers.dat");
 
     @Override
-    public void save(Developer developer) {
-        String developerToString = "";
+    public void save(Developer developer){
+        File file = new File(user + sep + "Developers.dat");
         if (getById(developer.getId()).getId() != null) {
             System.out.println("Developer with this ID is already in base");
             return;
         }
+        String developerToString = "";
 
         developerToString += developer.getId() + ",";
         developerToString += developer.getFirstName() + ",";
@@ -25,7 +26,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
         developerToString += developer.getSpecialty() + ",";
         developerToString += developer.getSalary() + "\n";
 
-        try(FileOutputStream fileOutputStream = new FileOutputStream(file, true)) {
+        try (FileOutputStream fileOutputStream = new FileOutputStream(file, true)) {
             fileOutputStream.write(developerToString.getBytes());
             fileOutputStream.flush();
             fileOutputStream.close();
@@ -43,7 +44,6 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
             System.out.println("Developer not found...");
             return;
         }else {
-            //remov(developer);
             save(developer);
         }
     }
@@ -94,7 +94,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
         }
 
         try (BufferedReader bufferReader = new BufferedReader(new FileReader(file));
-             BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile))) {
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(tempFile))) {
             String line;
             while ((line = bufferReader.readLine()) != null) {
                 if (line.isEmpty()){
@@ -104,11 +104,11 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
                 String[] arrayOfSplitDeveloper = line.split(",");
 
                 if ((Long.parseLong(arrayOfSplitDeveloper[0])) != id){
-                developer.setId(Long.parseLong(arrayOfSplitDeveloper[0]));
-                developer.setFirstName(arrayOfSplitDeveloper[1]);
-                developer.setLastName(arrayOfSplitDeveloper[2]);
-                developer.setSpecialty(arrayOfSplitDeveloper[3]);
-                developer.setSalary(Double.parseDouble(arrayOfSplitDeveloper[4]));
+                    developer.setId(Long.parseLong(arrayOfSplitDeveloper[0]));
+                    developer.setFirstName(arrayOfSplitDeveloper[1]);
+                    developer.setLastName(arrayOfSplitDeveloper[2]);
+                    developer.setSpecialty(arrayOfSplitDeveloper[3]);
+                    developer.setSalary(Double.parseDouble(arrayOfSplitDeveloper[4]));
                     bufferedWriter.write(line);
                     bufferedWriter.newLine();
                     bufferedWriter.flush();
@@ -124,7 +124,7 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
             throw new Exception("Could not rename file");
         }
 
-        return false;
+        return true;
     }
 
     @Override
@@ -159,5 +159,4 @@ public class JavaIODeveloperDAOImpl implements DeveloperDAO{
             e.printStackTrace();
         }return developers;
     }
-
 }

@@ -1,6 +1,5 @@
 package HomeWork04.developers.dao;
 
-import java.io.IOException;
 import java.util.Collection;
 
 public interface GenericDAO<T, ID> {

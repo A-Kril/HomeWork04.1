@@ -58,12 +58,12 @@ public class DeveloperView {
                 case "4":
                     System.out.print("Enter developers ID:  ");
                     id = Integer.parseInt(reader.readLine());
-                    if(controller.deleteDeveloper(id))
+                    if(controller.deleteDeveloper(id)) {
                         System.err.println("Developer was deleted.");
+                    }
                     else {
-                        System.out.print("Developer was not deleted:  ");
+                        System.out.print("Developer was not deleted: ");
                         System.err.println("ID is not exist!!");
-                        //System.err.println("Developer was deleted.");
                     }
                     startMenu();
                     break;
@@ -75,19 +75,19 @@ public class DeveloperView {
                     System.err.println("Stop. Program terminated.");
                     break;
                 default:
-                    System.err.println("ENTER NUMBER FROM 1 TO 5!!!\n");
+                    System.err.println("Enter number from 1 to 5!!!\n");
                     startMenu();
                     break;
             }
         }
         catch (IOException c) {
-            System.err.println("VALUE IS NOT NUMBER!!!222");
+            System.err.println("Value is not number!!!");
             startMenu();
         }
         catch (InterruptedException d) {
         }
         catch (NumberFormatException a) {
-            System.err.println("VALUE IS NOT NUMBER!!!111");
+            System.err.println("Value is not number!!!");
             startMenu();
         }
     }
